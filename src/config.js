@@ -20,10 +20,12 @@ class Config {
     this.GITHUB_SCOPES = {
       organization: {
         url: `https://github.com/${github.context.repo.owner}`,
-        context: { owner: github.context.repo.owner }
+        context: { owner: github.context.repo.owner },
+        apiPath: `/repos/${github.context.repo.owner}/${github.context.repo.repo}`,
       },
       repository: {
         url: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}`,
+        apiPath: `/orgs/${github.context.repo.owner}`,
         context: {
           owner: github.context.repo.owner,
           repo: github.context.repo.repo
@@ -37,8 +39,8 @@ class Config {
       this.tagSpecifications = [{ResourceType: 'instance', Tags: tags}, {ResourceType: 'volume', Tags: tags}];
     }
 
-    this.githubConfig = this.GITHUB_SCOPES[this.input.scope];
-    if (!this.githubConfig) {
+    this.github = this.GITHUB_SCOPES[this.input.scope];
+    if (!this.github) {
       throw new Error(`The 'scope' input is not valid`);
     }
 
