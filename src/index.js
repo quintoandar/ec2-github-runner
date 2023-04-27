@@ -10,6 +10,7 @@ function setOutput(label, ec2InstanceId) {
 
 async function start() {
   const label = config.generateLabel();
+  core.info(`label name: ${label}`);
   const githubRegistrationToken = await gh.getRegistrationToken();
   const ec2InstanceId = await aws.startEc2Instance(label, githubRegistrationToken);
   setOutput(label, ec2InstanceId);
