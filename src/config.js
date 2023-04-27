@@ -21,11 +21,11 @@ class Config {
       organization: {
         url: `https://github.com/${github.context.repo.owner}`,
         context: { owner: github.context.repo.owner },
-        apiPath: `/repos/${github.context.repo.owner}/${github.context.repo.repo}`,
+        apiPath: `/orgs/${github.context.repo.owner}`
       },
       repository: {
         url: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}`,
-        apiPath: `/orgs/${github.context.repo.owner}`,
+        apiPath: `/repos/${github.context.repo.owner}/${github.context.repo.repo}`,
         context: {
           owner: github.context.repo.owner,
           repo: github.context.repo.repo
