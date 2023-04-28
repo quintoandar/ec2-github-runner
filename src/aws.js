@@ -47,7 +47,8 @@ async function startEc2Instance(label, githubRegistrationToken) {
     IamInstanceProfile: { Name: config.input.iamRoleName },
     TagSpecifications: config.tagSpecifications,
     Placement: {
-      Tenancy: 'host'
+      Tenancy: 'host',
+      HostId: 'h-00f82bda389004cae'
     }
   };
 
