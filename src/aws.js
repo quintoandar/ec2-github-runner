@@ -19,7 +19,7 @@ function buildUserDataScript(githubRegistrationToken, label) {
       '#!/bin/bash',
       'mkdir actions-runner && cd actions-runner',
       'case $(uname -m) in aarch64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}',
-      'case $(uname -r) in Darwin) OS="osx" ;; Linux) OS="linux" ;; esac && export RUNNER_OS=${OS}',
+      'case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=${OS}',
       'export VERSION="2.303.0"',
       'curl -O -L https://github.com/actions/runner/releases/download/${VERSION}/actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz',
       'tar xzf ./actions-runner-linux-${RUNNER_ARCH}-${VERSION}.tar.gz',
