@@ -11,13 +11,13 @@ function buildUserDataScript(githubRegistrationToken, label) {
       '#!/bin/bash',
       `cd "${config.input.runnerHomeDir}"`,
       'export RUNNER_ALLOW_RUNASROOT=1',
-      `./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label}  --name ${label} --runnergroup default --work "${config.input.runnerHomeDir}"`,
+      `./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label}  --name ${label} --runnergroup default --work "${config.input.runnerHomeDir}" --replace`,
       './run.sh',
     ];
   } else {
     return [
       '#!/bin/bash',
-      'mkdir actions-runner && cd actions-runner',
+      'cd /opt && mkdir actions-runner && cd actions-runner',
       'case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}',
       'case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=${OS}',
       'export VERSION="2.303.0"',
@@ -26,7 +26,7 @@ function buildUserDataScript(githubRegistrationToken, label) {
       'export LANG=en_EN.UTF-8',
       'tar xzf ./actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz',
       'export RUNNER_ALLOW_RUNASROOT=1',
-      `./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label} --name ${label} --runnergroup default --work $(pwd)`,
+      `./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace`,
       './run.sh',
     ];
   }
