@@ -15,6 +15,7 @@ class Config {
       iamRoleName: core.getInput('iam-role-name'),
       runnerHomeDir: core.getInput('runner-home-dir'),
       scope: core.getInput('scope'),
+      hostId: core.getInput('hostId'),
     };
 
     this.GITHUB_SCOPES = {

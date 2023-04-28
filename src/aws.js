@@ -46,11 +46,14 @@ async function startEc2Instance(label, githubRegistrationToken) {
     SecurityGroupIds: [config.input.securityGroupId],
     IamInstanceProfile: { Name: config.input.iamRoleName },
     TagSpecifications: config.tagSpecifications,
-    Placement: {
-      Tenancy: 'host',
-      HostId: 'h-00f82bda389004cae'
-    }
   };
+
+  if (config.input.hostId) {
+    params.Placement = {
+      Tenancy: 'host',
+      HostId: config.input.hostId
+    }
+  }
 
   try {
     const result = await ec2.runInstances(params).promise();
