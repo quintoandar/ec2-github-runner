@@ -1,6 +1,6 @@
-name: On-demand self-hosted AWS EC2 runner for GitHub Actions (forked version)
-description: GitHub Action for automatic creation and registration AWS EC2 instance as a GitHub Actions self-hosted runner.
-author: Arielly Parussulo
+name: MacOS self-hosted AWS EC2 runner for GitHub Actions
+description: A fork from ec2-gitub-runner that supports MacOS runners
+author: QuintoAndar
 branding:
   icon: 'box'
   color: 'orange'
