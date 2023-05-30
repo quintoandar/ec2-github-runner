@@ -16,6 +16,7 @@ class Config {
       runnerHomeDir: core.getInput('runner-home-dir'),
       scope: core.getInput('scope'),
       hostId: core.getInput('host-id'),
+      preScript: core.getInput('pre-script') || '',
     };
 
     this.GITHUB_SCOPES = {

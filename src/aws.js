@@ -7,28 +7,36 @@ function buildUserDataScript(githubRegistrationToken, label) {
   if (config.input.runnerHomeDir) {
     // If runner home directory is specified, we expect the actions-runner software (and dependencies)
     // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
-    return [
-      '#!/bin/bash',
-      `cd "${config.input.runnerHomeDir}"`,
-      'export RUNNER_ALLOW_RUNASROOT=1',
-      `./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label}  --name ${label} --runnergroup default --work "${config.input.runnerHomeDir}" --replace`,
-      './run.sh',
-    ];
+    return ```
+#!/bin/bash
+
+${config.input.preScript}
+
+su ec2-user -c 'echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.zshrc'
+su ec2-user -c '${config.input.runnerHomeDir}/./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label}  --name ${label} --runnergroup default --work "${config.input.runnerHomeDir}" --replace'
+su ec2-user -c '${config.input.runnerHomeDir}/./run.sh'
+    ```
   } else {
-    return [
-      '#!/bin/bash',
-      'cd /opt && mkdir actions-runner && cd actions-runner',
-      'case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}',
-      'case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=${OS}',
-      'export VERSION="2.303.0"',
-      'curl -O -L https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz',
-      'export LC_ALL=en_US.UTF-8',
-      'export LANG=en_EN.UTF-8',
-      'tar xzf ./actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz',
-      'export RUNNER_ALLOW_RUNASROOT=1',
-      `./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace`,
-      './run.sh',
-    ];
+    return ```
+#!/bin/bash
+
+${config.input.preScript}
+
+case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}
+case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=${OS}
+export VERSION="2.303.0"
+
+su ec2-user -c "curl -O -L https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz -o /tmp/actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz"
+su ec2-user -c 'echo "export LC_ALL=en_US.UTF-8" >> $HOME/.zshrc'
+su ec2-user -c 'echo "export LANG=en_US.UTF-8" >> $HOME/.zshrc'
+su ec2-user -c 'echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.zshrc'
+su ec2-user -c 'mkdir /tmp/actions-runner'
+su ec2-user -c "tar xzf /tmp/actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz -C /tmp/actions-runner --strip-components=1"
+su ec2-user -c 'mv /tmp/actions-runner $HOME/actions-runner'
+tar xzf ./actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz
+su ec2-user -c '$HOME/actions-runner/./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace'
+su ec2-user -c '$HOME/actions-runner/./run.sh &'
+```;
   }
 }
 
@@ -43,7 +51,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
     InstanceType: config.input.ec2InstanceType,
     MinCount: 1,
     MaxCount: 1,
-    UserData: Buffer.from(userData.join('\n')).toString('base64'),
+    UserData: Buffer.from(userData).toString('base64'),
     SubnetId: config.input.subnetId,
     SecurityGroupIds: [config.input.securityGroupId],
     IamInstanceProfile: { Name: config.input.iamRoleName },

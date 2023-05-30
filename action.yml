@@ -74,6 +74,10 @@ inputs:
     description: >-
       The host id to provide a dedicated host in your account. It is necessary for macos instances.
     required: false
+  pre-script:
+    description: >-
+      A script that will be executed before starting the Github Runner.
+    required: false
   timeout:
     description:
       The time (in minutes) that this actions will wait the the runner be created. The default value is 5 minutes.
