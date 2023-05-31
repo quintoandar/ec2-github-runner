@@ -7,7 +7,7 @@ function buildUserDataScript(githubRegistrationToken, label) {
   if (config.input.runnerHomeDir) {
     // If runner home directory is specified, we expect the actions-runner software (and dependencies)
     // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
-    return ```
+    return `
 #!/bin/bash
 
 ${config.input.preScript}
@@ -15,9 +15,9 @@ ${config.input.preScript}
 su ec2-user -c 'echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.zshrc'
 su ec2-user -c '${config.input.runnerHomeDir}/./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label}  --name ${label} --runnergroup default --work "${config.input.runnerHomeDir}" --replace'
 su ec2-user -c '${config.input.runnerHomeDir}/./run.sh'
-    ```
+    `;
   } else {
-    return ```
+    return `
 #!/bin/bash
 
 ${config.input.preScript}
@@ -35,7 +35,7 @@ su ec2-user -c "tar xzf /tmp/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar
 su ec2-user -c 'mv /tmp/actions-runner $HOME/actions-runner'
 su ec2-user -c '$HOME/actions-runner/./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace'
 su ec2-user -c '$HOME/actions-runner/./run.sh &'
-```;
+`;
   }
 }
 
