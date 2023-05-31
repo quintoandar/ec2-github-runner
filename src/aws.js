@@ -33,7 +33,6 @@ su ec2-user -c 'echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.zshrc'
 su ec2-user -c 'mkdir /tmp/actions-runner'
 su ec2-user -c "tar xzf /tmp/actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz -C /tmp/actions-runner --strip-components=1"
 su ec2-user -c 'mv /tmp/actions-runner $HOME/actions-runner'
-tar xzf ./actions-runner-${RUNNER_OS}-${RUNNER_ARCH}-${VERSION}.tar.gz
 su ec2-user -c '$HOME/actions-runner/./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace'
 su ec2-user -c '$HOME/actions-runner/./run.sh &'
 ```;
