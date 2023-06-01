@@ -8,7 +8,7 @@ function buildUserDataScript(githubRegistrationToken, label) {
     // If runner home directory is specified, we expect the actions-runner software (and dependencies)
     // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
     return `
-#!/bin/bash
+    #!/bin/bash
 
 ${config.input.preScript}
 
@@ -18,8 +18,8 @@ su ec2-user -c '${config.input.runnerHomeDir}/./run.sh'
     `;
   } else {
     return `
-sudo -u ec2-user -i <<'EOF'
 #!/bin/bash
+sudo -u ec2-user -i <<'EOF'
 
 case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=$ARCH
 case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=$OS
