@@ -19,25 +19,24 @@ su ec2-user -c '${config.input.runnerHomeDir}/./run.sh'
   } else {
     return `
 #!/bin/bash
-sudo -u ec2-user -i <<'EOF'
-
-case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=$ARCH
-case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=$OS
+sudo -u ec2-user -i <<EOF
 
 ${config.input.preScript}
 
+case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=$ARCH
+case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=$OS
 export VERSION="2.303.0"
 
-curl -L https://github.com/actions/runner/releases/download/v$VERSION/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz -o /tmp/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 echo "export LC_ALL=en_US.UTF-8" >> $HOME/.zshrc
 echo "export LANG=en_US.UTF-8" >> $HOME/.zshrc
 echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.zshrc
 source $HOME/.zshrc
-mkdir /tmp/actions-runner
-tar xzf /tmp/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz -C /tmp/actions-runner --strip-components=1
-mv /tmp/actions-runner $HOME/actions-runner
+mkdir actions-runner
+curl -L -O https://github.com/actions/runner/releases/download/v$VERSION/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
+tar xzf actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 ./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace
 ./run.sh &
+rm -f actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 EOF
     `;
   }
