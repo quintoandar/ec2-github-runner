@@ -7,8 +7,7 @@ function buildUserDataScript(githubRegistrationToken, label) {
   if (config.input.runnerHomeDir) {
     // If runner home directory is specified, we expect the actions-runner software (and dependencies)
     // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
-    return `
-    #!/bin/bash
+    return `#!/bin/bash
 
 chsh -s /bin/bash ec2-user
 sudo -u ec2-user -i <<EOF
@@ -20,8 +19,7 @@ ${config.input.runnerHomeDir}/./run.sh
 EOF
     `;
   } else {
-    return `
-#!/bin/bash
+    return `#!/bin/bash
 
 chsh -s /bin/bash ec2-user
 sudo -u ec2-user -i <<EOF
@@ -43,8 +41,7 @@ tar xzf actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 ./run.sh &
 
 rm -f actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
-EOF
-    `;
+EOF`;
   }
 }
 
