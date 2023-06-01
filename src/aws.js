@@ -12,7 +12,7 @@ function buildUserDataScript(githubRegistrationToken, label) {
 
 ${config.input.preScript}
 
-su ec2-user -c 'echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.zshrc'
+su ec2-user -c 'echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.bashrc'
 su ec2-user -c '${config.input.runnerHomeDir}/./config.sh --url ${config.github.url} --token ${githubRegistrationToken} --labels ${label}  --name ${label} --runnergroup default --work "${config.input.runnerHomeDir}" --replace'
 su ec2-user -c '${config.input.runnerHomeDir}/./run.sh'
     `;
@@ -27,15 +27,15 @@ case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; e
 case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=$OS
 export VERSION="2.303.0"
 
-echo "export LC_ALL=en_US.UTF-8" >> $HOME/.zshrc
-echo "export LANG=en_US.UTF-8" >> $HOME/.zshrc
-echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.zshrc
-source $HOME/.zshrc
+echo "export LC_ALL=en_US.UTF-8" >> $HOME/.bashrc
+echo "export LANG=en_US.UTF-8" >> $HOME/.bashrc
+echo "export RUNNER_ALLOW_RUNASROOT=1" >> $HOME/.bashrc
+source $HOME/.bashrc
 mkdir actions-runner
 curl -L -O https://github.com/actions/runner/releases/download/v$VERSION/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 tar xzf actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 ./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace
-./run.sh &
+bash -c './run.sh &'
 rm -f actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 EOF
     `;
