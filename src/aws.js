@@ -23,13 +23,12 @@ EOF
     return `#!/bin/bash
 
 chsh -s /bin/bash ec2-user
+${config.input.preScript}
 
+su - ec2-user -i <<EOF
 case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=$ARCH
 case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=$OS
 export VERSION="2.303.0"
-
-su - ec2-user -i <<EOF
-${config.input.preScript}
 
 echo "export LC_ALL=en_US.UTF-8" >> ~/.bashrc
 echo "export LANG=en_US.UTF-8" >> ~/.bashrc
