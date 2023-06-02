@@ -25,11 +25,10 @@ EOF
 chsh -s /bin/bash ec2-user
 ${config.input.preScript}
 
-su - ec2-user -i <<EOF
 case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=$ARCH
 case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=$OS
 export VERSION="2.303.0"
-
+su - ec2-user -i <<EOF
 echo "export LC_ALL=en_US.UTF-8" >> ~/.bashrc
 echo "export LANG=en_US.UTF-8" >> ~/.bashrc
 echo "export RUNNER_ALLOW_RUNASROOT=1" >> ~/.bashrc
@@ -38,7 +37,7 @@ source ~/.bashrc
 mkdir -p actions-runner && cd actions-runner
 curl -L -O https://github.com/actions/runner/releases/download/v$VERSION/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 tar xzf actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
-./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work $(pwd) --replace
+./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work ~/actions-runner --replace
 ./run.sh &
 
 rm -f actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
