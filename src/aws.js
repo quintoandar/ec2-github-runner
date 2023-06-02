@@ -22,17 +22,19 @@ EOF
   } else {
     return `#!/bin/bash
 
-chsh -s /bin/bash ec2-user
+
 ${config.input.preScript}
 
+case $(su - ec2-user -c 'echo $SHELL') in /bin/zsh) SHELL_EC2="~/.zshrc" ;; /bin/bash) SHELL_EC2="~/.bashrc" ;; /bin/sh) SHELL_EC2="~/.shrc" ;; esac && export EC2_SHELL_CONFIG=$SHELL_EC2
 case $(uname -m) in aarch64|arm64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=$ARCH
 case $(uname -a) in Darwin*) OS="osx" ;; Linux*) OS="linux" ;; esac && export RUNNER_OS=$OS
 export VERSION="2.303.0"
 su - ec2-user -i <<EOF
-echo "export LC_ALL=en_US.UTF-8" >> ~/.bashrc
-echo "export LANG=en_US.UTF-8" >> ~/.bashrc
-echo "export RUNNER_ALLOW_RUNASROOT=1" >> ~/.bashrc
-source ~/.bashrc
+
+echo "export LC_ALL=en_US.UTF-8" >> $EC2_SHELL_CONFIG
+echo "export LANG=en_US.UTF-8" >> $EC2_SHELL_CONFIG
+echo "export RUNNER_ALLOW_RUNASROOT=1" >> $EC2_SHELL_CONFIG
+source $EC2_SHELL_CONFIG
 
 mkdir -p actions-runner && cd actions-runner
 curl -L -O https://github.com/actions/runner/releases/download/v$VERSION/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
