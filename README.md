@@ -21,19 +21,20 @@ See [below](#example) the YAML code of the depicted workflow. <br><br>
 
 **Table of Contents**
 
-- [Use cases](#use-cases)
-  - [Access private resources in your VPC](#access-private-resources-in-your-vpc)
-  - [Customize hardware configuration](#customize-hardware-configuration)
-  - [Save costs](#save-costs)
-- [Usage](#usage)
-  - [How to start](#how-to-start)
-  - [Inputs](#inputs)
-  - [Environment variables](#environment-variables)
-  - [Outputs](#outputs)
-  - [Example](#example)
-  - [Real user examples](#real-user-examples)
-- [Self-hosted runner security with public repositories](#self-hosted-runner-security-with-public-repositories)
-- [License Summary](#license-summary)
+- [On-demand self-hosted AWS EC2 runner for GitHub Actions](#on-demand-self-hosted-aws-ec2-runner-for-github-actions)
+  - [Use cases](#use-cases)
+    - [Access private resources in your VPC](#access-private-resources-in-your-vpc)
+    - [Customize hardware configuration](#customize-hardware-configuration)
+    - [Save costs](#save-costs)
+  - [Usage](#usage)
+    - [How to start](#how-to-start)
+    - [Inputs](#inputs)
+    - [Environment variables](#environment-variables)
+    - [Outputs](#outputs)
+    - [Example](#example)
+    - [Real user examples](#real-user-examples)
+  - [Self-hosted runner security with public repositories](#self-hosted-runner-security-with-public-repositories)
+  - [License Summary](#license-summary)
 
 ## Use cases
 
@@ -203,6 +204,7 @@ Now you're ready to go!
 | `iam-role-name`                                                                                                                                                              | Optional. Used only with the `start` mode. | IAM role name to attach to the created EC2 runner. <br><br> This allows the runner to have permissions to run additional actions within the AWS account, without having to manage additional GitHub secrets and AWS users. <br><br> Setting this requires additional AWS permissions for the role launching the instance (see above). |
 | `aws-resource-tags`                                                                                                                                                          | Optional. Used only with the `start` mode. | Specifies tags to add to the EC2 instance and any attached storage. <br><br> This field is a stringified JSON array of tag objects, each containing a `Key` and `Value` field (see example below). <br><br> Setting this requires additional AWS permissions for the role launching the instance (see above).                         |
 | `runner-home-dir`                                                                                                                                                              | Optional. Used only with the `start` mode. | Specifies a directory where pre-installed actions-runner software and scripts are located.<br><br> |
+| `pre-script`| Optional. Used only with the `start` mode. | allows the execution of a pre script before executing the github action runner. With this option the developer can add tools to the EC2 instance that can be used by the user's pipeline. **Warning: the script will be executed with the root user. If you want to execute an operation with the ec2-user user, you need to manually switch to ec2-user's shell.** |
 
 ### Environment variables
 
