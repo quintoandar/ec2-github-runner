@@ -1,4 +1,4 @@
-piVersion: quintoandar.com.br/checklist/v2
+apiVersion: quintoandar.com.br/checklist/v2
 kind: ServiceChecklist
 
 metadata:
