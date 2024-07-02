@@ -40,7 +40,7 @@ mkdir -p actions-runner && cd actions-runner
 curl -L -O https://github.com/actions/runner/releases/download/v$VERSION/actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 tar xzf actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 ./config.sh --url ${config.github.url} --token ${githubRegistrationToken}  --labels ${label} --name ${label} --runnergroup default --work ~/actions-runner --replace
-./run.sh &
+nohup ./run.sh &
 
 rm -f actions-runner-$RUNNER_OS-$RUNNER_ARCH-$VERSION.tar.gz
 EOF`;
